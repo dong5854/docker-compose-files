@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  elsticsearch01:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2-arm64 # AWS managed service 에서 지원해주는 elasticsearch 버전
+    container_name: elsticsearch01
+    environment:
+      - cluster.name=elsticsearch-cluster
+      - node.name=es01
+      - network.host=_site_
+      - discovery.seed_hosts=elsticsearch02,elsticsearch03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true # Elasticsearch가 사용하는 힙 메모리 영역을 점유
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ~/dev/elasticsearch/data01:/usr/share/elasticsearch/data # 색인된 데이터 마운트
+      - ~/dev/elasticsearch/logs01:/usr/share/elasticsearch/logs # 실행 로그 마운트
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  elsticsearch02:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2-arm64 # AWS managed service 에서 지원해주는 elasticsearch 버전
+    container_name: elsticsearch02
+    environment:
+      - cluster.name=elsticsearch-cluster
+      - node.name=es02
+      - network.host=_site_
+      - discovery.seed_hosts=elsticsearch01,elsticsearch03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true # Elasticsearch가 사용하는 힙 메모리 영역을 점유
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ~/dev/elasticsearch/data02:/usr/share/elasticsearch/data # 색인된 데이터 마운트
+      - ~/dev/elasticsearch/logs02:/usr/share/elasticsearch/logs # 실행 로그 마운트
+    networks:
+      - elastic
+  elsticsearch03:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2-arm64 # AWS managed service 에서 지원해주는 elasticsearch 버전
+    container_name: elsticsearch03
+    environment:
+      - cluster.name=elsticsearch-cluster
+      - node.name=es03
+      - network.host=_site_
+      - discovery.seed_hosts=elsticsearch02,elsticsearch03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true # Elasticsearch가 사용하는 힙 메모리 영역을 점유
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ~/dev/elasticsearch/data03:/usr/share/elasticsearch/data # 색인된 데이터 마운트
+      - ~/dev/elasticsearch/logs03:/usr/share/elasticsearch/logs # 실행 로그 마운트
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge
