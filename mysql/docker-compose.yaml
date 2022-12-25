@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  mysql:
+    platform: linux/amd64
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    secrets:
+      - db_root_password
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - ~/dev/mysql:/var/lib/mysql:rw
+    user: mysql
+    restart: on-failure
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+secrets:
+  db_root_password:
+    file: ./secret_mysql.txt
