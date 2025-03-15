@@ -1,21 +1,21 @@
 services:
   Ansible-Server:
-    image: centos:latest
+    image: centos:7
     container_name: Ansible-Server
     restart: always
     command: sleep infinity
   Ansible-node01:
-    image: centos:latest
+    image: centos:7
     container_name: Ansible-node01
     restart: always
     command: sleep infinity
   Ansible-node02:
-    image: centos:latest
+    image: centos:7
     container_name: Ansible-node02
     restart: always
     command: sleep infinity
   Ansible-node03:
-    image: centos:latest
+    image: centos:7
     container_name: Ansible-node03
     restart: always
     command: sleep infinity
